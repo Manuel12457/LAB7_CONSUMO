@@ -3,7 +3,6 @@ package edu.pucp.gtics.lab5_gtics_20221.entity;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "juegos")
