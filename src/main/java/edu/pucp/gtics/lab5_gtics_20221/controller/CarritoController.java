@@ -18,24 +18,22 @@ import java.util.Optional;
 
 public class CarritoController {
 
-
-
-    public String listaCarrito (Model model, ...){
+    public String listaCarrito (Model model){
 
         return "carrito/lista";
     }
 
-    public String nuevoCarrito(@RequestParam("id") int id, ...){
+    public String nuevoCarrito(@RequestParam("id") int id){
 
         return "redirect:/vista";
     }
 
-    public String editarCarrito( ... ){
+    public String editarCarrito(){
 
         return "redirect:/juegos/lista";
     }
 
-    public String borrarCarrito(...){
+    public String borrarCarrito(){
 
         return "redirect:/carrito/lista";
     }
