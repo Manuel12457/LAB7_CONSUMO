@@ -11,6 +11,11 @@
             <h2 th:text="${distribuidora.id == null? 'Nueva Distribuidora' : 'Editar Distribuidora'}"></h2>
         </div>
         <div class="container-fluid">
+                <div th:if="${msg != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span th:text="${msg}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
                 <form method="POST"  class="row g-3" th:object="${distribuidora}" th:action="@{/distribuidoras/guardar}">
                     <input type="hidden" th:field="*{id}" />
                     <div class="form-group">

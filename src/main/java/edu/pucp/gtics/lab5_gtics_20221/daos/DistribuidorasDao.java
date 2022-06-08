@@ -31,7 +31,7 @@ public class DistribuidorasDao {
     DistribuidorasDao distribuidorasDao;
 
 
-    @GetMapping(value = {"/lista"})
+    @GetMapping(value = {"", "/","/lista"})
     public String  listarDistribuidoras(Model model) {
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication("elarios@pucp.pe","123456").build();
@@ -54,34 +54,46 @@ public class DistribuidorasDao {
     }
 
     @GetMapping("/editar")
-    public String editarDistribuidoras(@RequestParam("id") int id, Model model) {
+    public String editarDistribuidoras(Model model,@RequestParam(value="id",defaultValue = "no") String id, RedirectAttributes attr) {
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication("elarios@pucp.pe","123456").build();
 
-        String url = "http://localhost:8080/distribuidora/obtener/" + id;
-
-        ResponseEntity<DistrDto2> responseMap = restTemplate.getForEntity(url, DistrDto2.class);
-
-        DistrDto2 distrDto2 = responseMap.getBody();
-
-        if (distrDto2.getEstado().equals("ok")){
-            model.addAttribute("distribuidora", distrDto2.getDistribuidora());
-            model.addAttribute("listaPaises", this.listarPaises());
-            return "distribuidoras/editarFrm";
-        }else {
+        if(id.equals("no")){
             return "redirect:/distribuidoras/lista";
+        }else{
+            String url = "http://localhost:8080/distribuidora/obtener/" + id;
+
+            ResponseEntity<DistrDto2> responseMap = restTemplate.getForEntity(url, DistrDto2.class);
+
+            DistrDto2 distrDto2 = responseMap.getBody();
+
+            if (distrDto2.getEstado().equals("ok")){
+                model.addAttribute("distribuidora", distrDto2.getDistribuidora());
+                model.addAttribute("listaPaises", this.listarPaises());
+                return "distribuidoras/editarFrm";
+            }else {
+                attr.addFlashAttribute("msg", distrDto2.getMsg());
+                return "redirect:/distribuidoras/lista";
+            }
+
         }
+
+
     }
 
 
 
     @PostMapping("/guardar")
-    public String guardarDistribuidora(Model model, RedirectAttributes attr, @ModelAttribute("distribuidora") @Valid Distribuidoras distribuidora , BindingResult bindingResult) {
+    public String guardarDistribuidora(Model model, RedirectAttributes attr, @ModelAttribute("distribuidora")  Distribuidoras distribuidora ) {
 
 
-        if(bindingResult.hasErrors()){
+        if(distribuidora.getNombre().isBlank()
+                ||distribuidora.getDescripcion().isBlank()
+                || distribuidora.getFundacion()==null ||
+                distribuidora.getIdsede().getIdpais()==-1 || distribuidora.getWeb().isBlank()){
             model.addAttribute("distribuidora", distribuidora);
             model.addAttribute("listaPaises", this.listarPaises());
+            model.addAttribute("msg", "Debe llenar todos los campos");
             return "distribuidoras/editarFrm";
         } else {
 
@@ -125,7 +137,6 @@ public class DistribuidorasDao {
             restTemplate.delete("http://localhost:8080/distribuidora/borrar/" + id);
             attr.addFlashAttribute("msg", "Producto borrado exitosamente");
         }
-
 
         return "redirect:/distribuidoras/lista";
 
