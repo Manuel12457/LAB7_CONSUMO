@@ -8,10 +8,11 @@
         <main>
             <!-- Contenido -->
         <div class="page-header text-center">
-            <h2 th:text="${distribuidora.iddistribuidora == 0? 'Nueva Distribuidora' : 'Editar Distribuidora'}"></h2>
+            <h2 th:text="${distribuidora.id == null? 'Nueva Distribuidora' : 'Editar Distribuidora'}"></h2>
         </div>
         <div class="container-fluid">
                 <form method="POST"  class="row g-3" th:object="${distribuidora}" th:action="@{/distribuidoras/guardar}">
+                    <input type="hidden" th:field="*{id}" />
                     <div class="form-group">
                         <label for="nombre">Nombre</label>
                         <input type="text" class="form-control" th:classappend="${#fields.hasErrors('nombre')?'is-invalid':''}" id="nombre" name="nombre" th:field="*{nombre}" >
@@ -34,19 +35,19 @@
                     </div>
                     <div class="form-group">
                         <label for="pais.idpais">Sede</label>
-                        <select class="form-select" th:classappend="${#fields.hasErrors('pais.idpais')?'is-invalid':''}" th:field="*{pais.idpais}" >
+                        <select class="form-select" th:classappend="${#fields.hasErrors('idsede.idpais')?'is-invalid':''}" th:field="*{idsede.idpais}" >
                             <option value="-1">- Seleccione -</option>
                             <option th:each="pais : ${listaPaises}"
-                                    th:value="${pais.idpais}"
-                                    th:text="${pais.nombre}"
-                                    th:selected="(${pais.idpais} == *{pais.idpais})" ></option>
+                                    th:value="${pais.getIdpais()}"
+                                    th:text="${pais.getNombre()}"
+                                    th:selected="(${pais.getIdpais()} == *{idsede.idpais})" ></option>
                         </select>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('pais.idpais')}" th:errors="*{pais.idpais}">Error</div>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('idsede.idpais')}" th:errors="*{idsede.idpais}">Error</div>
                     </div>
-                    <input type="hidden" th:field="*{iddistribuidora}" th:if="${distribuidora.iddistribuidora > 0}" />
+                    <input type="hidden" th:field="*{id}" th:if="${distribuidora.id > 0}" />
                     <div class="form-group">
                         <a th:href="@{/distribuidoras/lista}" class="btn btn-danger">Cancelar</a>
-                        <button type="submit" class="btn btn-primary" th:text="${distribuidora.iddistribuidora == 0? 'Registrar' : 'Actualizar'}">Reg/act</button>
+                        <button type="submit" class="btn btn-primary" th:text="${distribuidora.id == null? 'Registrar' : 'Actualizar'}">Reg/act</button>
                     </div>
                 </form>
         </div>
