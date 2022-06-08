@@ -1,4 +1,5 @@
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thumeleaf.org/extras/spring-security">
 <head th:replace="fragments/base.html :: head(title='Gameshop4 - Bienvenido')"></head>
 <body>
 <div class='container container-app'>
@@ -15,16 +16,22 @@
                 </div>
                 <div class="container-fluid">
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 card-app">
-                        <div class="col mb-4">
-                            <div class="card" >
-                                <img class="card-img-top" alt="Card image cap">
+                        <div class="col mb-4" th:each="juego, i : ${listaJuegos}">
+                            <div class="card">
+                                <img th:src="${juego.image}" class="card-img-top" alt="Card image cap">
                                 <span class="position-absolute top-100 end-0 translate-middle badge bg-danger fs-6"></span>
-                                <a class="btn btn-primary" th:title="Comprar"><span class="bi bi-plus-circle"></span> Comprar</a>
+                                <!--VALIDAR QUE LA OPCION COMPRA NO ESTE HABILITADA SIN INICIO DE SESION
+                                    COLOCAR EL HREF CORRESPONDIENTE PARA COMPRAR EL JUEGO-->
+                                <a sec:authorize="hasAnyAuthority('USER')" class="btn btn-primary" th:title="Comprar" th:href="@{|/carrito/anadir?id=${juego.idjuego}|}"><span class="bi bi-plus-circle" ></span> Comprar</a>
                                 <div class="card-body">
                                     <h5 class="card-title" >
-
+                                        <span th:text="${juego.nombre}"></span>
+                                        <span class="badge bg-warning text-dark" th:text="${juego.genero.nombre}"></span>
                                     </h5>
-                                    <p class="card-text"></p>
+                                    <p class="card-text" >
+                                        <span th:text="${juego.descripcion}"></span>
+                                        <span class="position-absolute translate-middle badge bg-danger" style="position: relative; bottom: -20px; right: -1px; z-index: 10;"><b th:text="'$ '+ ${juego.precio}"></b><span class="visually-hidden">unread messages</span></span>
+                                        <!--<span class="badge bg-danger" th:text="${juego.precio}"></span></p>-->
                                 </div>
                             </div>
                         </div>

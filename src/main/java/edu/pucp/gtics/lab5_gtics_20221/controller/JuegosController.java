@@ -1,5 +1,6 @@
 package edu.pucp.gtics.lab5_gtics_20221.controller;
 
+import edu.pucp.gtics.lab5_gtics_20221.daos.JuegosDao;
 import edu.pucp.gtics.lab5_gtics_20221.entity.*;
 import edu.pucp.gtics.lab5_gtics_20221.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,9 @@ import java.util.Optional;
 @Controller
 
 public class JuegosController {
+
+    @Autowired
+    JuegosDao juegosDao;
 
     @Autowired
     JuegosRepository juegosRepository;
@@ -37,19 +42,36 @@ public class JuegosController {
     UserRepository userRepository;
 
     @GetMapping(value = {"/juegos/lista"})
-    public String listaJuegos (...){
+    public String listaJuegos (Model model, HttpSession session){
+        User user = (User) session.getAttribute("usuario");
 
+        //Ambos deben retornar listas de juegos
+        if (user.getAutorizacion().equals("ADMIN")) {
+            model.addAttribute("listaJuegos", juegosDao.listarJuegos());
+            return "juegos/lista";
+        } else {
+            model.addAttribute("listaJuegos", juegosDao.listarJuegos());
+            return "juegos/comprado";
+        }
     }
 
     @GetMapping(value = {"", "/", "/vista"})
-    public String vistaJuegos ( ...){
-
+    public String vistaJuegos (Model model, HttpSession session){
+        User user = (User) session.getAttribute("usuario");
+        //Ambos deben retornar listas de juegos
+        if(user==null){
+            model.addAttribute("listaJuegos", juegosDao.listarJuegos());
+        } else {
+            model.addAttribute("listaJuegos", juegosDao.listarJuegos());
+        }
+        return "juegos/vista";
     }
+
 
     @GetMapping("/juegos/nuevo")
     public String nuevoJuegos(Model model, @ModelAttribute("juego") Juegos juego){
         List<Plataformas> listaPlataformas = plataformasRepository.findAll();
-        List<Distribuidoras> listaDistribuidoras = distribuidorasRepository.findAll();
+        List<Distribuidoras> listaDistribuidoras = distribuidorasRepository.findAll(); //Colocar que lo saque del distribuidorasDao
         List<Generos> listaGeneros = generosRepository.findAll();
         model.addAttribute("listaPlataformas", listaPlataformas);
         model.addAttribute("listaDistribuidoras", listaDistribuidoras);
@@ -59,13 +81,12 @@ public class JuegosController {
 
     @GetMapping("/juegos/editar")
     public String editarJuegos(@RequestParam("id") int id, Model model){
-        Optional<Juegos> opt = juegosRepository.findById(id);
+        Juegos juegoAEditar = juegosDao.obtenerJuegoPorId(id);
         List<Plataformas> listaPlataformas = plataformasRepository.findAll();
-        List<Distribuidoras> listaDistribuidoras = distribuidorasRepository.findAll();
+        List<Distribuidoras> listaDistribuidoras = distribuidorasRepository.findAll(); //Colocar que lo saque del distribuidorasDao
         List<Generos> listaGeneros = generosRepository.findAll();
-        if (opt.isPresent()){
-            Juegos juego = opt.get();
-            model.addAttribute("juego", juego);
+        if (juegoAEditar != null){
+            model.addAttribute("juego", juegoAEditar);
             model.addAttribute("listaPlataformas", listaPlataformas);
             model.addAttribute("listaDistribuidoras", listaDistribuidoras);
             model.addAttribute("listaGeneros", listaGeneros);
@@ -79,7 +100,7 @@ public class JuegosController {
     public String guardarJuegos(Model model, RedirectAttributes attr, @ModelAttribute("juego") @Valid Juegos juego, BindingResult bindingResult ){
         if(bindingResult.hasErrors( )){
             List<Plataformas> listaPlataformas = plataformasRepository.findAll();
-            List<Distribuidoras> listaDistribuidoras = distribuidorasRepository.findAll();
+            List<Distribuidoras> listaDistribuidoras = distribuidorasRepository.findAll(); //Colocar que lo saque del distribuidorasDao
             List<Generos> listaGeneros = generosRepository.findAll();
             model.addAttribute("juego", juego);
             model.addAttribute("listaPlataformas", listaPlataformas);
@@ -92,7 +113,7 @@ public class JuegosController {
             } else {
                 attr.addFlashAttribute("msg", "Juego actualizado exitosamente");
             }
-            juegosRepository.save(juego);
+            juegosDao.guardarJuego(juego);
             return "redirect:/juegos/lista";
         }
 
@@ -101,15 +122,14 @@ public class JuegosController {
 
     @GetMapping("/juegos/borrar")
     public String borrarDistribuidora(@RequestParam("id") int id){
-        Optional<Juegos> opt = juegosRepository.findById(id);
-        if (opt.isPresent()) {
-            juegosRepository.deleteById(id);
+
+        Juegos juegoABorrar = juegosDao.obtenerJuegoPorId(id);
+
+        if (juegoABorrar != null) {
+            juegosDao.borrarJuego(id);
         }
         return "redirect:/juegos/lista";
     }
-
-
-
 
 
 }

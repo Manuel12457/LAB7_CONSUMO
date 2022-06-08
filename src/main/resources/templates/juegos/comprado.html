@@ -12,18 +12,18 @@
             </div>
             <div class="container-fluid">
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 card-app">
-                <div class="col mb-4" >
-                    <div class="card" >
-                        <img class="card-img-top" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title" >
-                                <span>...</span>
-                                <span class="badge badge-warning" >...</span>
-                            </h5>
-                            <p class="card-text" >...</p>
+                    <div class="col mb-4" th:each="juego, i : ${listaJuegos}">
+                        <div class="card" >
+                            <img th:src="${juego.imageURL}" class="card-img-top" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title" >
+                                    <span th:text="${juego.nombre}"></span>
+                                    <span class="badge bg-warning text-dark" th:text="${juego.genero}"></span>
+                                </h5>
+                                <p class="card-text" th:text="${juego.descripcion}"></p>
+                            </div>
                         </div>
                     </div>
-                </div>
                 </div>
             </div>
             <!-- /Contenido -->

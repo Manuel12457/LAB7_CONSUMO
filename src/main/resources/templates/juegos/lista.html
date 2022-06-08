@@ -33,11 +33,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr">
-
-                        <td><a class="btn btn-primary" th:title="Editar" ><span class="bi bi-pencil-square"></span></a></td>
-                        <td><a class="btn btn-danger" th:title="Borrar" ><span class="bi bi-trash"></span></a></td>
-                    </tr>
+                        <tr th:each="juego, i : ${listaJuegos}">
+                            <td th:text="${i.index + 1}"></td>
+                            <td><img th:src="${juego.image}" style="height: 100px ;width: 70px"></td>
+                            <td th:text="${juego.descripcion}"></td>
+                            <td th:text="${juego.plataforma.nombre}"></td>
+                            <td th:text="${juego.precio}"></td>
+                            <td><a class="btn btn-primary" th:title="Editar" th:href="@{'/juegos/editar?id=' + ${juego.idjuego}}" ><span class="bi bi-pencil-square"></span></a></td>
+                            <td><a class="btn btn-danger" th:title="Borrar" th:href="@{'/juegos/borrar?id=' + ${juego.idjuego}}"><span class="bi bi-trash"></span></a></td>
+                        </tr>
                     </tbody>
                 </table>
 
