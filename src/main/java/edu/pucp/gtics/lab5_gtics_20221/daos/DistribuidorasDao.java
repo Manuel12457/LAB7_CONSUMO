@@ -126,6 +126,7 @@ public class DistribuidorasDao {
             attr.addFlashAttribute("msg", "Producto borrado exitosamente");
         }
 
+
         return "redirect:/distribuidoras/lista";
 
 
