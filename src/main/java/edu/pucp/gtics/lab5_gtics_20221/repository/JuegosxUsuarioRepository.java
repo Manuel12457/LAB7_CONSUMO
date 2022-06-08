@@ -13,6 +13,6 @@ import java.util.List;
 
 
 
-public  JuegosxUsuarioRepository {
+public interface JuegosxUsuarioRepository {
 
 }
