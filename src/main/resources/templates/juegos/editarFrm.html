@@ -24,36 +24,36 @@
                     </div>
                     <div class="form-group">
                         <label for="genero.idgenero">Género</label>
-                        <select class=" form-select" th:classappend="${#fields.hasErrors('genero.idgenero')?'is-invalid':''}" th:field="*{genero.idgenero}" >
+                        <select class=" form-select" > <!--th:classappend="${#fields.hasErrors('genero.idgenero')?'is-invalid':''}" th:field="*{genero.idgenero}"-->
                             <option value="-1">- Seleccione -</option>
                             <option th:each="genero : ${listaGeneros}"
                                     th:value="${genero.idgenero}"
                                     th:text="${genero.nombre}"
-                                    th:selected="(${genero.idgenero} == *{genero.idgenero})" ></option>
+                                    th:selected="${genero.idgenero == juego.idgenero}"></option>
                         </select>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('genero.idgenero')}" th:errors="*{genero.idgenero}">Error</div>
+<!--                        <div class="invalid-feedback" th:if="${#fields.hasErrors('genero.idgenero')}" th:errors="*{genero.idgenero}">Error</div>-->
                     </div>
                     <div class="form-group">
                         <label for="plataforma.idplataforma">Plataforma</label>
-                        <select class="form-select" th:classappend="${#fields.hasErrors('plataforma.idplataforma')?'is-invalid':''}" th:field="*{plataforma.idplataforma}" >
+                        <select class="form-select"  > <!--th:classappend="${#fields.hasErrors('plataforma.idplataforma')?'is-invalid':''}" th:field="*{plataforma.idplataforma}"-->
                           <option value="-1">- Seleccione -</option>
                           <option th:each="plataforma : ${listaPlataformas}"
                               th:value="${plataforma.idplataforma}"
                               th:text="${plataforma.nombre}"
-                              th:selected="(${plataforma.idplataforma} == *{plataforma.idplataforma})" ></option>
+                              th:selected="${plataforma.idplataforma == juego.idplataforma}"></option>
                         </select>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('plataforma.idplataforma')}" th:errors="*{plataforma.idplataforma}">Error</div>
+<!--                        <div class="invalid-feedback" th:if="${#fields.hasErrors('plataforma.idplataforma')}" th:errors="*{plataforma.idplataforma}">Error</div>-->
                     </div>
                     <div class="form-group">
                         <label for="distribuidora.iddistribuidora">Distribuidora</label>
-                        <select class="form-select" th:classappend="${#fields.hasErrors('distribuidora.iddistribuidora')?'is-invalid':''}" th:field="*{distribuidora.iddistribuidora}" >
+                        <select class="form-select"  > <!--th:classappend="${#fields.hasErrors('distribuidora.iddistribuidora')?'is-invalid':''}" th:field="*{distribuidora.iddistribuidora}"-->
                             <option value="-1">- Seleccione -</option>
                             <option th:each="distribuidora : ${listaDistribuidoras}"
-                                    th:value="${distribuidora.iddistribuidora}"
+                                    th:value="${distribuidora.id}"
                                     th:text="${distribuidora.nombre}"
-                                    th:selected="(${distribuidora.iddistribuidora} == *{distribuidora.iddistribuidora})" ></option>
+                                    th:selected="${distribuidora.id == juego.iddistribuidora}"></option>
                         </select>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('distribuidora.iddistribuidora')}" th:errors="*{distribuidora.iddistribuidora}">Error</div>
+<!--                        <div class="invalid-feedback" th:if="${#fields.hasErrors('distribuidora.iddistribuidora')}" th:errors="*{distribuidora.iddistribuidora}">Error</div>-->
                     </div>
                     <div class="form-group">
                         <label>Imagen URL</label>

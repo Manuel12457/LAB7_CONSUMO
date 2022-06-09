@@ -1,6 +1,7 @@
 package edu.pucp.gtics.lab5_gtics_20221.daos;
 
 import edu.pucp.gtics.lab5_gtics_20221.dtos.JuegosDto;
+import edu.pucp.gtics.lab5_gtics_20221.dtos.JuegosDto2;
 import edu.pucp.gtics.lab5_gtics_20221.entity.Juegos;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -26,8 +27,10 @@ public class JuegosDao {
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication("elarios@pucp.pe","123456").build(); //CAMBIAR
         if (juego.getIdjuego() > 0) {
+            url = "http://localhost:8080/juego/nuevo";
             restTemplate.put(url, httpEntity, Juegos.class);
         } else {
+            url = "http://localhost:8080/juego/actualizar";
             restTemplate.postForEntity(url, httpEntity, Juegos.class);
         }
 
@@ -56,10 +59,10 @@ public class JuegosDao {
     public List<Juegos> listarJuegos() {
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication("elarios@pucp.pe","123456").build();
-        ResponseEntity<Juegos[]> response = restTemplate.getForEntity(
-                "http://localhost:8080/juegos", Juegos[].class); //Cambiar por la direccion del WebService
+        ResponseEntity<JuegosDto2> response = restTemplate.getForEntity(
+                "http://localhost:8080/juegos", JuegosDto2.class); //Cambiar por la direccion del WebService
 
-        return Arrays.asList(response.getBody());
+        return Arrays.asList(response.getBody().getJuegos());
     }
 
 }

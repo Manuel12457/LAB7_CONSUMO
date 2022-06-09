@@ -24,20 +24,49 @@ public class Juegos implements Serializable {
 
     private String image;
 
-    @ManyToOne
-    @JoinColumn(name = "idplataforma")
-    @Valid
-    private Plataformas plataforma;
-
-
-    @Transient
-    @Valid
-    private Distribuidoras distribuidora;
-
-    @ManyToOne
     @JoinColumn(name = "idgenero")
-    @Valid
-    private Generos genero;
+    private Integer idgenero;
+
+    @JoinColumn(name = "idplataforma")
+    private Integer idplataforma;
+
+    @JoinColumn(name = "ideditora")
+    private Integer ideditora;
+
+    @JoinColumn(name = "iddistribuidora")
+    private Integer iddistribuidora;
+
+    public Integer getIddistribuidora() {
+        return iddistribuidora;
+    }
+
+    public void setIddistribuidora(Integer iddistribuidora) {
+        this.iddistribuidora = iddistribuidora;
+    }
+
+    public Integer getIdeditora() {
+        return ideditora;
+    }
+
+    public void setIdeditora(Integer ideditora) {
+        this.ideditora = ideditora;
+    }
+
+    public Integer getIdplataforma() {
+        return idplataforma;
+    }
+
+    public void setIdplataforma(Integer idplataforma) {
+        this.idplataforma = idplataforma;
+    }
+
+    public Integer getIdgenero() {
+        return idgenero;
+    }
+
+    public void setIdgenero(Integer idgenero) {
+        this.idgenero = idgenero;
+    }
 
     public int getIdjuego() {
         return idjuego;
@@ -71,14 +100,6 @@ public class Juegos implements Serializable {
         this.precio = precio;
     }
 
-    public Plataformas getPlataforma() {
-        return plataforma;
-    }
-
-    public void setPlataforma(Plataformas plataforma) {
-        this.plataforma = plataforma;
-    }
-
     public String getImage() {
         return image;
     }
@@ -87,19 +108,4 @@ public class Juegos implements Serializable {
         this.image = image;
     }
 
-    public Distribuidoras getDistribuidora() {
-        return distribuidora;
-    }
-
-    public void setDistribuidora(Distribuidoras distribuidora) {
-        this.distribuidora = distribuidora;
-    }
-
-    public Generos getGenero() {
-        return genero;
-    }
-
-    public void setGenero(Generos genero) {
-        this.genero = genero;
-    }
 }

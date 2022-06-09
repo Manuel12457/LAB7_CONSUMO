@@ -48,6 +48,9 @@ public class JuegosController {
         User user = (User) session.getAttribute("usuario");
 
         //Ambos deben retornar listas de juegos
+        model.addAttribute("generos", generosRepository.findAll());
+        model.addAttribute("plataformas", plataformasRepository.findAll());
+
         if (user.getAutorizacion().equals("ADMIN")) {
             model.addAttribute("listaJuegos", juegosDao.listarJuegos());
             return "juegos/lista";
@@ -61,6 +64,12 @@ public class JuegosController {
     public String vistaJuegos (Model model, HttpSession session){
         User user = (User) session.getAttribute("usuario");
         //Ambos deben retornar listas de juegos
+
+        for (Juegos j : juegosDao.listarJuegos()) {
+            System.out.println("Genero: " + j.getIdgenero());
+        }
+
+        model.addAttribute("generos", generosRepository.findAll());
         if(user==null){
             model.addAttribute("listaJuegos", juegosDao.listarJuegos());
         } else {
@@ -89,6 +98,8 @@ public class JuegosController {
 
     @GetMapping("/juegos/editar")
     public String editarJuegos(@RequestParam("id") int id, Model model){
+        System.out.println(id);
+
         Juegos juegoAEditar = juegosDao.obtenerJuegoPorId(id);
         List<Plataformas> listaPlataformas = plataformasRepository.findAll();
         RestTemplate restTemplate = new RestTemplateBuilder()

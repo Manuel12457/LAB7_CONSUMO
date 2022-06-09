@@ -26,7 +26,7 @@
                                 <div class="card-body">
                                     <h5 class="card-title" >
                                         <span th:text="${juego.nombre}"></span>
-                                        <span class="badge bg-warning text-dark" th:text="${juego.genero.nombre}"></span>
+                                        <span class="badge bg-warning text-dark" th:each="g : ${generos}" th:if="${g.idgenero == juego.idgenero}" th:text="${g.nombre}"></span>
                                     </h5>
                                     <p class="card-text" >
                                         <span th:text="${juego.descripcion}"></span>
