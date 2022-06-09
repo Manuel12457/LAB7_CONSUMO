@@ -1,6 +1,7 @@
 package edu.pucp.gtics.lab5_gtics_20221.controller;
 
 import edu.pucp.gtics.lab5_gtics_20221.daos.JuegosDao;
+import edu.pucp.gtics.lab5_gtics_20221.dtos.DistribuidorasDto;
 import edu.pucp.gtics.lab5_gtics_20221.entity.*;
 import edu.pucp.gtics.lab5_gtics_20221.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,6 @@ public class JuegosController {
 
     @Autowired
     PlataformasRepository plataformasRepository;
-
-    @Autowired
-    DistribuidorasRepository distribuidorasRepository;
 
     @Autowired
     GenerosRepository generosRepository;
@@ -104,7 +102,7 @@ public class JuegosController {
         if (juegoAEditar != null){
             model.addAttribute("juego", juegoAEditar);
             model.addAttribute("listaPlataformas", listaPlataformas);
-            model.addAttribute("listaDistribuidoras", listaDistribuidoras);
+            model.addAttribute("listaDistribuidoras", Arrays.asList(response.getBody().getDistribuidoras()));
             model.addAttribute("listaGeneros", listaGeneros);
             return "juegos/editarFrm";
         }else {
@@ -126,7 +124,7 @@ public class JuegosController {
             List<Generos> listaGeneros = generosRepository.findAll();
             model.addAttribute("juego", juego);
             model.addAttribute("listaPlataformas", listaPlataformas);
-            model.addAttribute("listaDistribuidoras", listaDistribuidoras);
+            model.addAttribute("listaDistribuidoras", Arrays.asList(response.getBody().getDistribuidoras()));
             model.addAttribute("listaGeneros", listaGeneros);
             return "juegos/editarFrm";
         } else {
