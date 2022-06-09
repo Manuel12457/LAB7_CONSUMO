@@ -74,8 +74,8 @@ public class CarritoController {
         //asignacion
         for (Juegos juego : carrito) {
             //si existe el juego comprado, se aumenta la cantidad
-            if (juegosxUsuarioRepository.obtenerJuegoPorUser(juego.getIdjuego(), user.getIdusuario()) != null){
-                JuegosxUsuario juegosxUsuario=juegosxUsuarioRepository.obtenerJuegoPorUser(juego.getIdjuego(), user.getIdusuario());
+            if (juegosxUsuarioRepository.obtenerJuegoPorUser(juego.getId(), user.getIdusuario()) != null){
+                JuegosxUsuario juegosxUsuario=juegosxUsuarioRepository.obtenerJuegoPorUser(juego.getId(), user.getIdusuario());
                 juegosxUsuario.setCantidad(juegosxUsuario.getCantidad()+1);
                 juegosxUsuarioRepository.save(juegosxUsuario);
             }else{
@@ -103,7 +103,7 @@ public class CarritoController {
         //busqueda
         int i =0;
         for (Juegos juego : listacarr){
-            if (juego.getIdjuego()==listacarr.get(i).getIdjuego()){
+            if (juego.getId()==listacarr.get(i).getId()){
                 listacarr.remove(i);
                 break;
             }

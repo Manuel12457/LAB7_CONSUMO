@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class Juegos implements Serializable {
 
     @Id
-    private int idjuego;
+    private Integer id;
 
     @Size(min = 3, max = 45, message = "Debe contener entre 3 y 45 caracteres")
     private String nombre;
@@ -68,12 +68,12 @@ public class Juegos implements Serializable {
         this.idgenero = idgenero;
     }
 
-    public int getIdjuego() {
-        return idjuego;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdjuego(int idjuego) {
-        this.idjuego = idjuego;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNombre() {

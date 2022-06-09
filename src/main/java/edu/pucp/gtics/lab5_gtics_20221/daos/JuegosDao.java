@@ -26,7 +26,7 @@ public class JuegosDao {
 
         RestTemplate restTemplate = new RestTemplateBuilder()
                 .basicAuthentication("elarios@pucp.pe","123456").build(); //CAMBIAR
-        if (juego.getIdjuego() > 0) {
+        if (juego.getId() > 0) {
             url = "http://localhost:8080/juego/nuevo";
             restTemplate.put(url, httpEntity, Juegos.class);
         } else {
