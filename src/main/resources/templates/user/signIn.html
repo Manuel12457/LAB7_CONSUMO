@@ -1,37 +1,39 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/base.html :: head(title='Gameshop4 - Iniciar Sesión')"></head>
-<body>
-<div class="container">
-    <div class="row justify-content-md-center mt-5">
-        <div class="col col-xs-12 col-md-6">
-            <div class="card">
-                <div class="card-header navbar-light text-center" style="background-color: #eaedfc;">
-                    <a class="navbar-brand" th:href="@{/}">
-                        <img th:src="@{/img/icon.png}" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
-                        GameShop4
-                    </a>
-                </div>
-                <div class="card-body">
-                    <div th:if="${param.error}" class="alert alert-danger" role="alert">
-                        Acceso Denegado
+    <head th:replace="fragments/base.html :: head(title='Gameshop4 - Iniciar Sesión')"></head>
+    <body>
+        <div class="container">
+            <div class="row justify-content-md-center mt-5">
+                <div class="col col-xs-12 col-md-6">
+                    <div class="card">
+                        <div class="card-header navbar-light text-center" style="background-color: #eaedfc;">
+                            <a class="navbar-brand" th:href="@{/}">
+                                <img th:src="@{/img/icon.png}" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
+                                GameShop4
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                                Acceso Denegado
+                            </div>
+                            <form class="row g-3" method="post" th:action="@{/processLogin}">
+                                <div class="form-group">
+                                    <label for="username">Usuario</label>
+                                    <input type="text" class="form-control" id="username"  name="username" required autofocus>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Contraseña</label>
+                                    <input type="password" class="form-control" id="password" name="password">
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    <form class="row g-3" method="post">
-                        <div class="form-group">
-                            <label for="">Usuario</label>
-                        </div>
-                        <div class="form-group">
-                            <label for="">Contraseña</label>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<div th:replace="fragments/base.html :: jsScripts"></div>
-</body>
+        <div th:replace="fragments/base.html :: jsScripts"></div>
+    </body>
 </html>

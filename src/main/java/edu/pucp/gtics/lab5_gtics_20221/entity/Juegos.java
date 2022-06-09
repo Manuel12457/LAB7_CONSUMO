@@ -3,10 +3,11 @@ package edu.pucp.gtics.lab5_gtics_20221.entity;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "juegos")
-public class Juegos {
+public class Juegos implements Serializable {
 
     @Id
     private int idjuego;
@@ -28,8 +29,8 @@ public class Juegos {
     @Valid
     private Plataformas plataforma;
 
-    @ManyToOne
-    @JoinColumn(name = "iddistribuidora")
+
+    @Transient
     @Valid
     private Distribuidoras distribuidora;
 

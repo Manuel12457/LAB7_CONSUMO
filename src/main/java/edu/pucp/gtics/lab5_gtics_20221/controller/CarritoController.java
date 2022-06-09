@@ -1,6 +1,5 @@
 package edu.pucp.gtics.lab5_gtics_20221.controller;
 
-import edu.pucp.gtics.lab5_gtics_20221.daos.JuegosDao;
 import edu.pucp.gtics.lab5_gtics_20221.entity.*;
 import edu.pucp.gtics.lab5_gtics_20221.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,137 +8,110 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
+@Controller
+@RequestMapping("/carrito")
 public class CarritoController {
 
     @Autowired
-    JuegosDao juegosDao;
-
-    @Autowired
     JuegosRepository juegosRepository;
+
     @Autowired
     JuegosxUsuarioRepository juegosxUsuarioRepository;
 
-    @GetMapping("/carrito/lista")
-    public String listaCarrito(Model model, HttpSession session) {
+    @GetMapping(value = {"", "/","/lista"})
+    public String listaCarrito (Model model, HttpSession session){
+        List<Juegos> juegoscarrito= (List<Juegos>) session.getAttribute("carrito");
+        model.addAttribute("listjuegoscarrito",juegoscarrito);
+
         return "carrito/lista";
     }
 
-    @GetMapping("/carrito/comprar")
-    public String comprarCarrito(HttpSession session, RedirectAttributes redirectAttributes) {
+    //añadir juego al carrito de compras
+    @GetMapping(value = "/compras")
+    public String nuevoCarrito(@RequestParam("id") String id, HttpSession httpSession){
+        if(httpSession.getAttribute("carrito")==null){
+            //Se crea
+            List<Juegos> lista = new ArrayList<>();
+            lista.add(juegosRepository.findById(Integer.parseInt(id)).get());
+            httpSession.setAttribute("carrito",lista);
+            httpSession.setAttribute("ncarrito",1);
+        }else{
+            //se añade
+            List<Juegos> lista =(List<Juegos>) httpSession.getAttribute("carrito");
+            lista.add(juegosRepository.findById(Integer.parseInt(id)).get());
+            httpSession.setAttribute("carrito",lista);
+            httpSession.setAttribute("ncarrito",lista.size());
+        }
+        return "redirect:/vista";
+    }
+
+    /*
+    public String editarCarrito( ... ){
+
+        return "redirect:/juegos/lista";
+    }
+
+    public String borrarCarrito(...){
+
+        return "redirect:/carrito/lista";
+    }
+    */
+
+
+    //Comprar juegos del carrito de compras
+    @GetMapping("/comprar")
+    public String comprarCarrito(HttpSession session) {
         List<Juegos> carrito = (List<Juegos>) session.getAttribute("carrito");
         User user = (User) session.getAttribute("usuario");
-        List<JuegosxUsuario> listaComprar = new ArrayList<JuegosxUsuario>();
-        if(carrito.size()==0){
-            redirectAttributes.addFlashAttribute("msg", "No tiene ningún juego en el carrito");
-            return "redirect:/carrito/lista";
-        }
+        //asignacion
+        for (Juegos juego : carrito) {
+            //si existe el juego comprado, se aumenta la cantidad
+            if (juegosxUsuarioRepository.obtenerJuegoPorUser(juego.getIdjuego(), user.getIdusuario()) != null){
+                JuegosxUsuario juegosxUsuario=juegosxUsuarioRepository.obtenerJuegoPorUser(juego.getIdjuego(), user.getIdusuario());
+                juegosxUsuario.setCantidad(juegosxUsuario.getCantidad()+1);
+                juegosxUsuarioRepository.save(juegosxUsuario);
+            }else{
+                JuegosxUsuario juegosxUsuario = new JuegosxUsuario();
+                juegosxUsuario.setIdjuego(juego);
+                juegosxUsuario.setIdusuario(user);
+                juegosxUsuario.setCantidad(1);
+                juegosxUsuarioRepository.save(juegosxUsuario);
+            }
 
-        for (Juegos i : carrito) {
-            JuegosxUsuario juegosxUsuario = new JuegosxUsuario();
-            juegosxUsuario.setIdjuego(i);
-            juegosxUsuario.setIdusuario(user);
-            listaComprar.add(juegosxUsuario);
         }
-        juegosxUsuarioRepository.saveAll(listaComprar);
-        session.setAttribute("carrito", new ArrayList<Juegos>());
+        carrito.clear();
+        session.setAttribute("carrito",carrito);
         session.setAttribute("ncarrito", 0);
-        redirectAttributes.addFlashAttribute("msg","juegos comprados exitosamente");
         return "redirect:/carrito/lista";
+
     }
 
-    @GetMapping("/carrito/borrar")
-    public String borrarCarrito(HttpSession session, @RequestParam("id") String idString, RedirectAttributes redirectAttributes) {
-        int id;
-        try {
-            id = Integer.parseInt(idString);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "redirect:/vista";
-        }
-        Juegos juegoABorrar = juegosDao.obtenerJuegoPorId(id);
-        if (juegoABorrar == null) {
-            return "redirect:/vista";
-        }
-        List<Juegos> carrito = (List<Juegos>) session.getAttribute("carrito");
-        int ncarrito = (int) session.getAttribute("ncarrito");
-        int index = 0;
-        String juegoeliminado = "";
-        if (carrito.size() == 1 && (carrito.get(0).getIdjuego()==id)) {
-            carrito = new ArrayList<Juegos>();
-            ncarrito=ncarrito-1;
-        } else {
-            for (Juegos juego : carrito) {
-                if (juego.getIdjuego() == juegoABorrar.getIdjuego()) {
-                    ncarrito=ncarrito-1;
-                    juegoeliminado= carrito.get(index).getNombre();
-                    carrito.remove(index);
 
-                    break;
-                }
-                index++;
+    @GetMapping(value = "/borrar")
+    public String borrarCarrito(@RequestParam("id") String id, HttpSession httpSession){
+
+        List<Juegos> listacarr =(List<Juegos>) httpSession.getAttribute("carrito");
+
+        //busqueda
+        int i =0;
+        for (Juegos juego : listacarr){
+            if (juego.getIdjuego()==listacarr.get(i).getIdjuego()){
+                listacarr.remove(i);
+                break;
             }
+            i++;
         }
-        session.setAttribute("ncarrito", ncarrito);
-        session.setAttribute("carrito", carrito);
-        redirectAttributes.addFlashAttribute("msg","Juego borrado exitosamente "+ juegoeliminado );
+        httpSession.setAttribute("carrito",listacarr);
+        httpSession.setAttribute("ncarrito",listacarr.size());
         return "redirect:/carrito/lista";
     }
-
-    @GetMapping("/carrito/anadir")
-    public String anadirCarrito(HttpSession session, @RequestParam("id") String idString, RedirectAttributes redirectAttributes) {
-        int id;
-        try {
-            id = Integer.parseInt(idString);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "redirect:/vista";
-        }
-
-        Juegos juegoAAnadir = juegosDao.obtenerJuegoPorId(id);
-        if (juegoAAnadir == null) {
-            return "redirect:/vista";
-        }
-        List<Juegos> carrito= (List<Juegos>) session.getAttribute("carrito");
-
-        int index=0;
-        for(Juegos i : carrito){
-            if(i.getIdjuego()==juegoAAnadir.getIdjuego()){
-                redirectAttributes.addFlashAttribute("msg","Ya tiene el juego en su carrito");
-                return "redirect:/carrito/lista";
-            }
-        }
-
-        int ncarrito = (int) session.getAttribute("ncarrito");
-        carrito.add(juegoAAnadir);
-        session.setAttribute("ncarrito", ncarrito+1);
-        session.setAttribute("carrito", carrito);
-        redirectAttributes.addFlashAttribute("msg", "se ha añadido el juego " +juegoAAnadir.getNombre() + " al carrito");
-        return "redirect:/carrito/lista";
-    }
-
-//    public String nuevoCarrito(@RequestParam("id") int id, ...){
-//
-//        return "redirect:/vista";
-//    }
-//
-//    public String editarCarrito( ... ){
-//
-//        return "redirect:/juegos/lista";
-//    }
-//
-//    public String borrarCarrito(...){
-//
-//        return "redirect:/carrito/lista";
-//    }
-
 
 }

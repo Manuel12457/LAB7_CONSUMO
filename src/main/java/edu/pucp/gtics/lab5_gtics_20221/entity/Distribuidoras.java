@@ -3,8 +3,9 @@ package edu.pucp.gtics.lab5_gtics_20221.entity;
 import javax.naming.InterruptedNamingException;
 import javax.persistence.*;
 import javax.validation.Valid;
+import java.io.Serializable;
 
-public class Distribuidoras {
+public class Distribuidoras implements Serializable {
 
     private Integer id;
 

@@ -13,14 +13,20 @@ import java.util.List;
 @Repository
 
 public interface JuegosRepository extends JpaRepository<Juegos,Integer> {
-    @Query(value = "Select  j.idjuego, j.nombre, j.descripcion, g.nombre as genero, j.image as imageURL from gameshop3.juegos j " +
-            "inner join gameshop3.juegosxusuario ju  on j.idjuego=ju.idjuego " +
-            "inner join gameshop3.usuarios u on ju.idusuario=u.idusuario " +
-            "inner join gameshop3.generos g on g.idgenero=j.idgenero Where u.idusuario= ?",nativeQuery = true)
+    @Query(value = "Select  j.idjuego, j.nombre, j.descripcion, g.nombre as genero, j.image as imageURL from juegos j " +
+            "inner join juegosxusuario ju  on j.idjuego=ju.idjuego " +
+            "inner join usuarios u on ju.idusuario=u.idusuario " +
+            "inner join generos g on g.idgenero=j.idgenero Where u.idusuario= ?",nativeQuery = true)
     List<JuegosUserDto> obtenerJuegosPorUser(int idusuario);
 
     @Transactional
     @Modifying
     @Query(value = "Insert INTO juegosxusuario (idusuario, idjuego, cantidad) VALUES (?,?,1)", nativeQuery = true)
     void registrarJuegoPorUser(int idusuario, int idjuego);
+
+    @Query(value = "select * from juegos where juegos.idjuego not in (select juegosxusuario.idjuego from juegosxusuario where juegosxusuario.idusuario=?1) order by nombre desc",nativeQuery = true)
+    List<Juegos> obtenerJuegosNotInUsuario(int idusuario);
+
+    @Query(value = "select * from juegos  order by juegos.nombre desc  ",nativeQuery = true)
+    List<Juegos> obtenerJuegosDesc();
 }
