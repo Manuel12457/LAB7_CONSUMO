@@ -20,12 +20,11 @@ public class JuegosDao {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String url = "http://localhost:8080/product"; //Cambiar por la direccion del WebService
+        String url = "http://localhost:8080/juego"; //Cambiar por la direccion del WebService
         HttpEntity<Juegos> httpEntity = new HttpEntity<>(juego, headers);
 
         RestTemplate restTemplate = new RestTemplateBuilder()
-                .basicAuthentication("oscar.diaz@gmail.com", "oscar.diaz") //CAMBIAR
-                .build();
+                .basicAuthentication("elarios@pucp.pe","123456").build(); //CAMBIAR
         if (juego.getIdjuego() > 0) {
             restTemplate.put(url, httpEntity, Juegos.class);
         } else {
@@ -36,17 +35,16 @@ public class JuegosDao {
 
     public void borrarJuego(int id) {
         RestTemplate restTemplate = new RestTemplateBuilder()
-                .basicAuthentication("oscar.diaz@gmail.com", "oscar.diaz") //CAMBIAR
-                .build();
-        restTemplate.delete("http://localhost:8080/product/" + id); //Cambiar por la direccion del WebService
+                .basicAuthentication("elarios@pucp.pe","123456").build(); //CAMBIAR
+        restTemplate.delete("http://localhost:8080/juego/eliminar/" + id); //Cambiar por la direccion del WebService
+
     }
 
     public Juegos obtenerJuegoPorId(int id) {
         RestTemplate restTemplate = new RestTemplateBuilder()
-                .basicAuthentication("oscar.diaz@gmail.com", "oscar.diaz") //CAMBIAR
-                .build();
+                .basicAuthentication("elarios@pucp.pe","123456").build();
 
-        String url = "http://localhost:8080/product/" + id; //Cambiar por la direccion del WebService
+        String url = "http://localhost:8080/juego/obtener/" + id; //Cambiar por la direccion del WebService
 
         ResponseEntity<JuegosDto> responseMap = restTemplate.getForEntity(url, JuegosDto.class);
 
@@ -57,10 +55,9 @@ public class JuegosDao {
 
     public List<Juegos> listarJuegos() {
         RestTemplate restTemplate = new RestTemplateBuilder()
-                .basicAuthentication("oscar.diaz@gmail.com", "oscar.diaz") //CAMBIAR
-                .build();
+                .basicAuthentication("elarios@pucp.pe","123456").build();
         ResponseEntity<Juegos[]> response = restTemplate.getForEntity(
-                "http://localhost:8080/product", Juegos[].class); //Cambiar por la direccion del WebService
+                "http://localhost:8080/juegos", Juegos[].class); //Cambiar por la direccion del WebService
 
         return Arrays.asList(response.getBody());
     }
