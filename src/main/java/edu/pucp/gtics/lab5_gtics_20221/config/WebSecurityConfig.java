@@ -10,35 +10,34 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.sql.DataSource;
 
-@EnableWebSecurity
 @Configuration
-public class WebSecurityConfig  extends WebSecurityConfigurerAdapter{
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.formLogin().loginPage("/user/signIn").loginProcessingUrl("/processLogin").defaultSuccessUrl("/user/singInRedirect",true);
+        http.logout().logoutSuccessUrl("/").invalidateHttpSession(true).deleteCookies("JSESSIONID");
+        http.authorizeRequests()
+                .antMatchers("/plataformas","/plataformas/**").hasAnyAuthority("ADMIN")
+                .antMatchers("/distribuidoras","/distribuidoras/**").hasAnyAuthority("ADMIN")
+                .antMatchers("/juegos","/juegos/**").hasAnyAuthority("ADMIN","USER")
+                .antMatchers("/vista").hasAnyAuthority("USER");
+        //.antMatchers("/vista").anonymous();
+
+    }
 
     @Autowired
     DataSource dataSource;
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .anyRequest().permitAll();
-
-        http.formLogin()
-                .loginPage("/user/signIn")
-                .loginProcessingUrl("/processLogin")
-                .usernameParameter("correo")
-                .defaultSuccessUrl("/user/signInRedirect");
-
-        http.logout().logoutSuccessUrl("/");
-
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception{
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .passwordEncoder(new BCryptPasswordEncoder())
                 .usersByUsernameQuery("select correo, password, enabled from usuarios where correo = ?")
-                .authoritiesByUsernameQuery("select correo, autorizacion from usuarios where correo = ? and enabled=1");
+                .authoritiesByUsernameQuery("select correo, autorizacion from usuarios where correo = ? and enabled = 1");
     }
+
+
 }

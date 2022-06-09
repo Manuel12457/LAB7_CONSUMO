@@ -1,7 +1,9 @@
 package edu.pucp.gtics.lab5_gtics_20221.entity;
 
 
-public class Paises {
+import java.io.Serializable;
+
+public class Paises implements Serializable {
 
     private int idpais;
     private String iso;
